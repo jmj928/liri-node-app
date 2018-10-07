@@ -1,11 +1,12 @@
 require("dotenv").config();
 
 var request = require("request");
+var Twitter = require('twitter');
 
-var getKeys = require("./keys.js");
+var keys = require("./keys.js");
 
 //var spotify = new Spotify(keys.spotify);
-//var client = new Twitter(keys.twitter);
+var client = new Twitter(keys.twitter);
 
 var action = process.argv[2];
 var nodeArgs = process.argv;
@@ -28,7 +29,7 @@ for (var i = 3; i < nodeArgs.length; i++) {
 
 switch (action) {
     case "my-tweets":
-      
+      getTweets();
       break;
     
     case "spotify-this-song":
@@ -66,6 +67,21 @@ switch (action) {
                 console.log("Sorry there was an error retrieving that movie. Please try a different one!");
             }
             });
+
+
+    }
+
+    function getTweets (){
+        client.get("https://api.twitter.com/1.1/statuses/user_timeline.json?&count=20&screen_name=@creepypastacom", function(error, tweets, response){
+            if(error) throw error;
+
+            console.log("List of top 20 tweets");
+            for(var i =0; i < 20; i++){
+        
+                console.log("\n" + (i + 1) + ": Created on " + tweets[i].created_at + "\nTweet: " + tweets[i].text );
+             }
+            
+          });
 
 
     }

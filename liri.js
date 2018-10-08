@@ -2,10 +2,10 @@ require("dotenv").config();
 
 var request = require("request");
 var Twitter = require('twitter');
-
+var Spotify = require('node-spotify-api');
 var keys = require("./keys.js");
 
-//var spotify = new Spotify(keys.spotify);
+var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
 var action = process.argv[2];
@@ -33,7 +33,7 @@ switch (action) {
       break;
     
     case "spotify-this-song":
-     
+     getSongData();
       break;
     
     case "movie-this":
@@ -83,5 +83,25 @@ switch (action) {
             
           });
 
+
+    }
+
+    function getSongData (){
+        if(value === ""){
+            value = "The Sign";
+        }
+
+
+        spotify.request( "https://api.spotify.com/v1/search?type=track&offset=0&limit=1&query=" + value )
+        .then(function(response) {
+         console.log("Artist: " + response.tracks.items[0].album.artists[0].name);  
+         console.log("Song Name: " + response.tracks.items[0].name);  
+         console.log("Preview: " + response.tracks.items[0].preview_url);  
+         console.log("Album: " + response.tracks.items[0].album.name);
+
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
 
     }

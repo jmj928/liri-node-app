@@ -91,7 +91,7 @@ function getAction(){
             for(var i =0; i < 20; i++){
         
                 console.log("\n" + (i + 1) + ": Created on " + tweets[i].created_at + "\nTweet: " + tweets[i].text );
-                passedData = "\n" + (i + 1) + ": Created on " + tweets[i].created_at + "\nTweet: " + tweets[i].text;
+                passedData = "\n" + (i + 1) + ": Created on " + tweets[i].created_at + "\nTweet: " + tweets[i].text + "\n";
                 addToLog();
              }
             
@@ -146,7 +146,7 @@ function getAction(){
     }
 
     function addToLog(){
-        fs.appendFile('log.txt', passedData, function(err) {
+        fs.appendFile('log.txt', "Command: " +action + " " + value + "\nOutput: \n" + passedData, function(err) {
 
             // If an error was experienced we will log it.
             if (err) {

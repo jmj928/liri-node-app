@@ -12,6 +12,7 @@ var client = new Twitter(keys.twitter);
 var action = process.argv[2];
 var nodeArgs = process.argv;
 var value = "";
+var passedData ="";
 
 for (var i = 3; i < nodeArgs.length; i++) {
 
@@ -65,6 +66,13 @@ function getAction(){
                 + "\nThe IMDB Rating is: " + JSON.parse(body).imdbRating + "\nRotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value 
                 + "\nCountry of production: " + JSON.parse(body).Country + "\nLanguage of movie: " + JSON.parse(body).Language
                 + "\nPlot: " + JSON.parse(body).Plot + "\nActors in movie: " + JSON.parse(body).Actors);
+
+                passedData = "The title is: " + JSON.parse(body).Title + "\nThe year the movie came out is: " + JSON.parse(body).Year 
+                + "\nThe IMDB Rating is: " + JSON.parse(body).imdbRating + "\nRotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value 
+                + "\nCountry of production: " + JSON.parse(body).Country + "\nLanguage of movie: " + JSON.parse(body).Language
+                + "\nPlot: " + JSON.parse(body).Plot + "\nActors in movie: " + JSON.parse(body).Actors + "\n\n";
+
+                addToLog();
             }
             else
             {
@@ -83,6 +91,8 @@ function getAction(){
             for(var i =0; i < 20; i++){
         
                 console.log("\n" + (i + 1) + ": Created on " + tweets[i].created_at + "\nTweet: " + tweets[i].text );
+                passedData = "\n" + (i + 1) + ": Created on " + tweets[i].created_at + "\nTweet: " + tweets[i].text;
+                addToLog();
              }
             
           });
@@ -99,10 +109,13 @@ function getAction(){
         spotify.request( "https://api.spotify.com/v1/search?type=track&offset=0&limit=5&query=" + value )
         .then(function(response) {
            
-                console.log("Artist: " + response.tracks.items[0].album.artists[0].name);  
-                console.log("Song Name: " + response.tracks.items[0].name);  
-                console.log("Preview: " + response.tracks.items[0].preview_url);  
-                console.log("Album: " + response.tracks.items[0].album.name);
+                console.log("Artist: " + response.tracks.items[0].album.artists[0].name + "\nSong Name: " + response.tracks.items[0].name
+                + "\nPreview: " + response.tracks.items[0].preview_url + "\nAlbum: " + response.tracks.items[0].album.name );  
+
+                passedData = "\nArtist: " + response.tracks.items[0].album.artists[0].name + "\nSong Name: " + response.tracks.items[0].name
+                + "\nPreview: " + response.tracks.items[0].preview_url + "\nAlbum: " + response.tracks.items[0].album.name;
+                addToLog();
+ 
             
         })
         .catch(function(err) {
@@ -130,4 +143,22 @@ function getAction(){
           
           });
         
+    }
+
+    function addToLog(){
+        fs.appendFile('log.txt', passedData, function(err) {
+
+            // If an error was experienced we will log it.
+            if (err) {
+              console.log(err);
+            }
+          
+            // If no error is experienced, we'll log the phrase "Content Added" to our node console.
+            else {
+              //console.log("Content Added!");
+              //do nothing
+            }
+          
+          });
+
     }

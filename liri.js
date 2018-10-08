@@ -4,6 +4,7 @@ var request = require("request");
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var keys = require("./keys.js");
+var fs = require("fs");
 
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
@@ -26,25 +27,28 @@ for (var i = 3; i < nodeArgs.length; i++) {
   
     }
   }
+getAction();
 
-switch (action) {
-    case "my-tweets":
-      getTweets();
-      break;
-    
-    case "spotify-this-song":
-     getSongData();
-      break;
-    
-    case "movie-this":
-      getMovieData();
-      break;
-    
-    case "do-what-it-says":
-      
-      break;
-    default :
-    conosole.log("Sorry that's not a valid command. Please make sure you entered correct. Valid commands are my-tweets, spotify-this-song, movie-this, and do-what-it-says");
+function getAction(){
+    switch (action) {
+        case "my-tweets":
+        getTweets();
+        break;
+        
+        case "spotify-this-song":
+        getSongData();
+        break;
+        
+        case "movie-this":
+        getMovieData();
+        break;
+        
+        case "do-what-it-says":
+        getText();
+        break;
+        default :
+        conosole.log("Sorry that's not a valid command. Please make sure you entered correct. Valid commands are my-tweets, spotify-this-song, movie-this, and do-what-it-says");
+        }
     }
 
     function getMovieData (){
@@ -92,16 +96,38 @@ switch (action) {
         }
 
 
-        spotify.request( "https://api.spotify.com/v1/search?type=track&offset=0&limit=1&query=" + value )
+        spotify.request( "https://api.spotify.com/v1/search?type=track&offset=0&limit=5&query=" + value )
         .then(function(response) {
-         console.log("Artist: " + response.tracks.items[0].album.artists[0].name);  
-         console.log("Song Name: " + response.tracks.items[0].name);  
-         console.log("Preview: " + response.tracks.items[0].preview_url);  
-         console.log("Album: " + response.tracks.items[0].album.name);
-
+           
+                console.log("Artist: " + response.tracks.items[0].album.artists[0].name);  
+                console.log("Song Name: " + response.tracks.items[0].name);  
+                console.log("Preview: " + response.tracks.items[0].preview_url);  
+                console.log("Album: " + response.tracks.items[0].album.name);
+            
         })
         .catch(function(err) {
           console.log(err);
         });
 
+    }
+
+    function getText(){
+        fs.readFile("random.txt", "utf8", function(error, data) {
+
+            if (error) {
+              return console.log(error);
+            }
+          
+            //console.log(data);
+          
+            var dataArr = data.split(",");
+          
+            //console.log(dataArr[0]);
+            //console.log(dataArr[1]);
+            action = dataArr[0];
+            value = dataArr[1];
+            getAction();
+          
+          });
+        
     }
